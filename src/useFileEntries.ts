@@ -1,5 +1,5 @@
-import { invoke } from "@tauri-apps/api";
 import { useEffect, useState } from "react";
+import { createSnapshot } from "./createSnapshot";
 
 const RELEVANT_EXTENSIONS = [".java"];
 
@@ -16,7 +16,7 @@ export interface CodebaseFileEntry {
 export const useFileEntries = () => {
   const [entries, setEntries] = useState<CodebaseFileEntry[]>([]);
   useEffect(() => {
-    invoke("read_files", {
+    createSnapshot({
       path: PATH,
       extensions: RELEVANT_EXTENSIONS,
       pathParts: RELEVANT_PATH_PARTS,

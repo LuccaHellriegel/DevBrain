@@ -1,4 +1,5 @@
 import { FC } from "react";
+import { useStore } from "./store";
 import { CodebaseFileEntry, useFileEntries } from "./useFileEntries";
 
 interface CodeBaseNode {
@@ -6,6 +7,7 @@ interface CodeBaseNode {
   children?: CodeBaseNode[];
 }
 
+//TODO: switch to ID-based access
 function mapToTree(entries: CodebaseFileEntry[]) {
   const nodes: Record<string, CodeBaseNode> = {};
   let root = { name: "", children: [] };
@@ -75,10 +77,14 @@ function mapToTree(entries: CodebaseFileEntry[]) {
 }
 
 const FileCmp: FC<{ data: CodeBaseNode }> = ({ data }) => {
+  const addFile = useStore((state) => state.addFile);
+
   return (
-    <div style={{ flexDirection: "row", display: "flex" }}>
+    <div
+      style={{ flexDirection: "row", display: "flex", alignItems: "center" }}
+    >
       <div>{data.name}</div>
-      <button></button>
+      <button onClick={() => addFile(data.name)}>+</button>
     </div>
   );
 };
@@ -104,9 +110,21 @@ const NodeCmp: FC<{ data: CodeBaseNode }> = ({ data }) => {
 
 function App() {
   const entries = useFileEntries();
+  const files = useStore((state) => state.files);
   return (
-    <div>
+    <div
+      style={{
+        flexDirection: "row",
+        display: "flex",
+        alignItems: "flex-start",
+      }}
+    >
       <NodeCmp data={mapToTree(entries)} />
+      <div>
+        {files.map((file) => (
+          <li>{file}</li>
+        ))}
+      </div>
     </div>
   );
 }
