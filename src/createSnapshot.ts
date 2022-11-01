@@ -16,6 +16,7 @@ export const createSnapshot = ({
   extensions,
   pathParts,
 }: SnapshotConfiguration): Promise<SnapshotEntry[]> => {
+  //TODO: deal with zero array?
   return invoke("read_files", {
     path,
     extensions,

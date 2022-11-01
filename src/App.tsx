@@ -1,17 +1,21 @@
+import { nanoid } from "nanoid";
 import { FC } from "react";
 import { useStore } from "./store";
 import { CodebaseFileEntry, useFileEntries } from "./useFileEntries";
 
 interface CodeBaseNode {
   name: string;
+  id: string;
+  parentId?: string;
+  childIds?: string[];
   children?: CodeBaseNode[];
 }
 
 //TODO: switch to ID-based access
 function mapToTree(entries: CodebaseFileEntry[]) {
-  const nodes: Record<string, CodeBaseNode> = {};
-  let root = { name: "", children: [] };
-  nodes[""] = root;
+  const nodeNameMap: Record<string, CodeBaseNode> = {};
+  let root = { name: "", children: [], id: nanoid(), childIds: [] };
+  nodeNameMap[""] = root;
   for (const entry of entries) {
     let pathParts = entry.path.split("/");
     if (entry.path.startsWith("/")) {
@@ -22,21 +26,29 @@ function mapToTree(entries: CodebaseFileEntry[]) {
     for (const part of pathParts) {
       if (part.split(".").length > 1) {
         //file
-        const node = nodes[cur];
+        const node = nodeNameMap[cur];
         //TODO: methods?
-        const fileNode = { name: cur + part };
+        const fileNode = { name: cur + part, id: nanoid() };
+        node.childIds?.push(fileNode.id);
         node.children?.push(fileNode);
         //need to add for post processing
-        nodes[fileNode.name] = fileNode;
+        nodeNameMap[fileNode.name] = fileNode;
       } else {
         //folder
-        const parent = nodes[cur];
+        const parent = nodeNameMap[cur];
         cur += part + "/";
-        if (!nodes[cur]) {
-          const node = { name: cur, children: [] };
-          nodes[cur] = node;
+        if (!nodeNameMap[cur]) {
+          const node = {
+            name: cur,
+            children: [],
+            id: nanoid(),
+            childIds: [],
+            parentId: parent.id,
+          };
+          nodeNameMap[cur] = node;
           //there are no dirs without children, because we map from the file paths
           parent.children?.push(node);
+          parent.childIds?.push(node.id);
         }
       }
     }
@@ -45,6 +57,7 @@ function mapToTree(entries: CodebaseFileEntry[]) {
   //find actual root
   while (true) {
     if (root.children.length === 1) {
+      delete nodeNameMap[root.name];
       root = root.children[0];
     } else {
       break;
@@ -55,7 +68,7 @@ function mapToTree(entries: CodebaseFileEntry[]) {
   const pathToCutOff = root.name.split("/").slice(0, -2).join("/");
 
   //post processing
-  Object.values(nodes).forEach((node) => {
+  Object.values(nodeNameMap).forEach((node) => {
     node.name = node.name.slice(pathToCutOff.length + 1);
     if (node.name.endsWith("/")) {
       node.name = node.name.slice(0, -1);
