@@ -12,6 +12,8 @@ export interface CodebaseNode {
 export type CodebaseNodeIdMap = Record<string, CodebaseNode>;
 
 export interface Snapshot {
+  time: number;
+  id: string;
   root: CodebaseNode;
   map: CodebaseNodeIdMap;
 }
@@ -119,7 +121,7 @@ function mapToTree(entries: CodebaseFileEntry[]): Snapshot {
     }
   });
 
-  return { root, map: nodeIdMap };
+  return { root, map: nodeIdMap, time: Date.now(), id: nanoid() };
 }
 
 const RELEVANT_EXTENSIONS = [".java"];
