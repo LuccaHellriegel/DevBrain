@@ -1,5 +1,4 @@
 import { FC } from "react";
-import { SnapshotSelection } from "./SnapshotSelection";
 import { useCreateSnapshot } from "./useCreateSnapshot";
 import { open } from "@tauri-apps/api/dialog";
 

@@ -40,6 +40,7 @@ export const SnapshotSelection: FC = () => {
         <SnapshotElement
           snapshot={snapshot}
           selected={snapshot.id === selectedSnapshot}
+          key={snapshot.id}
         />
       ))}
     </div>

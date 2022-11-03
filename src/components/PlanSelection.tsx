@@ -8,6 +8,7 @@ const PlanElement: FC<{ plan: Plan; selected: boolean }> = ({
 }) => {
   const removePlan = useDevBrainStore((state) => state.removePlan);
   const selectPlan = useDevBrainStore((state) => state.selectPlan);
+
   return (
     <div
       style={{
@@ -32,7 +33,11 @@ export const PlanSelection: FC = () => {
   return (
     <div>
       {plans.map((plan) => (
-        <PlanElement plan={plan} selected={plan.id === selectedPlan} />
+        <PlanElement
+          plan={plan}
+          selected={plan.id === selectedPlan}
+          key={plan.id}
+        />
       ))}
     </div>
   );
