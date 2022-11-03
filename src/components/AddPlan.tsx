@@ -7,20 +7,26 @@ export const AddPlan: FC = () => {
 
   const [planName, setPlanName] = useState("");
 
+  const handler = () => {
+    if (planName === "") return;
+    const plan = { id: nanoid(), items: [], name: planName };
+    addPlan(plan);
+    setPlanName("");
+  };
+
   return (
     <div style={{ padding: "4px" }}>
-      <button
-        onClick={() => {
-          if (planName === "") return;
-          const plan = { id: nanoid(), items: [], name: planName };
-          addPlan(plan);
-        }}
-      >
-        Add Plan
-      </button>
+      <button onClick={handler}>Add Plan</button>
       <input
         type="text"
+        value={planName}
         onChange={(event) => setPlanName(event.target.value)}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            handler();
+          }
+        }}
       ></input>
     </div>
   );

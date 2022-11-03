@@ -9,6 +9,7 @@ interface State {
   plans: Record<string, Plan>;
   selectedPlan?: string;
   selectPlan: (planId: string) => void;
+  updatePlan: (planId: string, delta: Partial<Plan>) => void;
   addPlan: (plan: Plan) => void;
   removePlan: (id: string) => void;
   addToCurrentPlan: (nodeId: string) => void;
@@ -31,6 +32,12 @@ export const useDevBrainStore = create<State>()(
         set(
           prod((state) => {
             state.selectedPlan = planId;
+          })
+        ),
+      updatePlan: (planId, delta) =>
+        set(
+          prod((state) => {
+            state.plans[planId] = { ...state.plans[planId], ...delta };
           })
         ),
       addPlan: (plan) =>

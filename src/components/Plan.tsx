@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { useDevBrainStore } from "../store";
 import { CodeNode } from "./CodeNode";
 
@@ -14,8 +14,49 @@ export interface Plan {
   items: PlanItem[];
 }
 
+export const PlanName: FC<{ plan: Plan }> = ({ plan }) => {
+  const [editing, setEditing] = useState(false);
+  const [editedName, setEditedName] = useState(plan.name);
+  const updatePlan = useDevBrainStore((state) => state.updatePlan);
+
+  useEffect(() => {
+    setEditedName(plan.name);
+    setEditing(false);
+  }, [plan]);
+
+  return editing ? (
+    <input
+      type="text"
+      style={{ fontWeight: "bold", padding: "10px", fontSize: "2em" }}
+      value={editedName}
+      onChange={(event) => setEditedName(event.target.value)}
+      onKeyDown={(event) => {
+        console.log(event.key);
+        if (event.key === "Enter") {
+          event.preventDefault();
+          updatePlan(plan.id, { name: editedName });
+        }
+        if (event.key === "Escape") {
+          event.preventDefault();
+          setEditedName(plan.name);
+          setEditing(false);
+        }
+      }}
+    />
+  ) : (
+    <div
+      style={{ fontWeight: "bold", padding: "10px", fontSize: "2em" }}
+      onClick={() => setEditing(true)}
+    >
+      {plan.name}
+    </div>
+  );
+};
+
 export const PlanView: FC = () => {
-  const plan = useDevBrainStore((state) => Object.values(state.plans)[0]);
+  const plan = useDevBrainStore((state) =>
+    state.selectedPlan ? state.plans[state.selectedPlan] : undefined
+  );
   const selectedSnapshot = useDevBrainStore((state) => state.selectedSnapshot);
   const snapshots = useDevBrainStore((state) => state.snapshots);
 
@@ -35,7 +76,7 @@ export const PlanView: FC = () => {
             nodeId={snapshots[selectedSnapshot].root.id}
           />
           <div>
-            <h1>{plan.name}</h1>
+            <PlanName plan={plan} />
             <div>
               {plan.items.map((item) => (
                 <li>{snapshots[item.snapshotId].map[item.nodeId].name}</li>

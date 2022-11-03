@@ -16,6 +16,7 @@ const PlanElement: FC<{ plan: Plan; selected: boolean }> = ({
         alignItems: "center",
         backgroundColor: selected ? "ActiveBorder" : "Background",
         cursor: "pointer",
+        justifyContent: "space-between",
       }}
     >
       <div onClick={() => selectPlan(plan.id)}>{plan.name}</div>

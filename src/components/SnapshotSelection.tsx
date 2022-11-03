@@ -16,6 +16,7 @@ const SnapshotElement: FC<{ snapshot: Snapshot; selected: boolean }> = ({
         alignItems: "center",
         backgroundColor: selected ? "ActiveBorder" : "Background",
         cursor: "pointer",
+        justifyContent: "space-between",
       }}
     >
       <div onClick={() => selectSnapshot(snapshot.id)}>
