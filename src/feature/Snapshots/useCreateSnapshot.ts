@@ -1,6 +1,6 @@
-import {invoke} from "@tauri-apps/api";
-import {nanoid} from "nanoid";
-import {useDevBrainStore} from "../../store";
+import { invoke } from "@tauri-apps/api";
+import { nanoid } from "nanoid";
+import { useDevBrainStore } from "../../store";
 
 export interface CodebaseNode {
   name: string;
@@ -39,7 +39,6 @@ export const createSnapshot = ({
   extensions,
   pathParts,
 }: SnapshotConfiguration): Promise<Snapshot> => {
-  //TODO: deal with zero array?
   return invoke("read_files", {
     path,
     extensions,
@@ -57,7 +56,7 @@ function mapToTree(entries: CodebaseFileEntry[]): Snapshot {
   //used for finding parents
   const nodeNameMap: Record<string, CodebaseNode> = {};
   const nodeIdMap: CodebaseNodeIdMap = {};
-  let root: CodebaseNode = {name: "", id: nanoid(), childIds: []};
+  let root: CodebaseNode = { name: "", id: nanoid(), childIds: [] };
   nodeNameMap[""] = root;
   nodeIdMap[root.id] = root;
   for (const entry of entries) {
@@ -71,7 +70,7 @@ function mapToTree(entries: CodebaseFileEntry[]): Snapshot {
       const parent = nodeNameMap[cur];
       if (part.split(".").length > 1) {
         //file
-        const fileNode = {name: cur + part, id: nanoid()};
+        const fileNode = { name: cur + part, id: nanoid() };
         parent.childIds?.push(fileNode.id);
         //need to add for post processing
         nodeNameMap[fileNode.name] = fileNode;
@@ -127,25 +126,14 @@ function mapToTree(entries: CodebaseFileEntry[]): Snapshot {
     }
   });
 
-  return {root, map: nodeIdMap, time: Date.now(), id: nanoid()};
+  return { root, map: nodeIdMap, time: Date.now(), id: nanoid() };
 }
-
-const RELEVANT_EXTENSIONS = [".java"];
-
-const RELEVANT_PATH_PARTS = ["/src/main/java/com/"];
-
-const PATH =
-  "/home/lucca/Schreibtisch/repos/PirateManagement/service-spring-abstract";
 
 export const useCreateSnapshot = () => {
   const addSnapshot = useDevBrainStore((state) => state.addSnapshot);
-  return () => {
+  return (config: SnapshotConfiguration) => {
     console.log("Adding Snapshot.");
-    createSnapshot({
-      path: PATH,
-      extensions: RELEVANT_EXTENSIONS,
-      pathParts: RELEVANT_PATH_PARTS,
-    }).then((snapshot) => {
+    createSnapshot(config).then((snapshot) => {
       console.log("Retrieved Snapshot: ", snapshot);
       addSnapshot(snapshot);
     });
