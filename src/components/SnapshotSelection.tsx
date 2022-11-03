@@ -1,15 +1,17 @@
 import { FC } from "react";
 import { Snapshot } from "./useCreateSnapshot";
-import { useDevBrainStore } from "../../store";
+import { useDevBrainStore } from "../store";
 
 const SnapshotElement: FC<{ snapshot: Snapshot }> = ({ snapshot }) => {
   const removeSnapshot = useDevBrainStore((state) => state.removeSnapshot);
   const selectSnapshot = useDevBrainStore((state) => state.selectSnapshot);
   return (
-    <div style={{ display: "flex", flexDirection: "row" }}>
+    <div
+      style={{ display: "flex", flexDirection: "row", alignItems: "center" }}
+    >
       <div onClick={() => selectSnapshot(snapshot.id)}>
         {snapshot.root.name +
-          "(" +
+          " (" +
           new Date(snapshot.time).toLocaleString() +
           ")"}
       </div>

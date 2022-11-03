@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid";
 import { FC } from "react";
-import { useDevBrainStore } from "../../store";
-import { CodeNode } from "../Snapshots/CodeNode";
+import { useDevBrainStore } from "../store";
+import { CodeNode } from "./CodeNode";
 
 export interface PlanItem {
   snapshotId: string;

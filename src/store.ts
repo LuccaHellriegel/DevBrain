@@ -1,8 +1,8 @@
 import create from "zustand";
 import { persist, StateStorage } from "zustand/middleware";
 import localForage from "localforage";
-import { Snapshot } from "./feature/Snapshots/useCreateSnapshot";
-import { Plan } from "./feature/Plan/Plan";
+import { Snapshot } from "./components/useCreateSnapshot";
+import { Plan } from "./components/Plan";
 import produce from "immer";
 
 interface State {

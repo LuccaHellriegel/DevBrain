@@ -1,6 +1,6 @@
 import { invoke } from "@tauri-apps/api";
 import { nanoid } from "nanoid";
-import { useDevBrainStore } from "../../store";
+import { useDevBrainStore } from "../store";
 
 export interface CodebaseNode {
   name: string;

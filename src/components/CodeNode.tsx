@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { useDevBrainStore } from "../../store";
+import { useDevBrainStore } from "../store";
 import { CodebaseNode } from "./useCreateSnapshot";
 
 export const CodeNode: FC<{ snapshotId: string; nodeId: string }> = ({
@@ -17,7 +17,15 @@ export const CodeNode: FC<{ snapshotId: string; nodeId: string }> = ({
 
   return (
     <div>
-      <div style={{ display: "flex", flexDirection: "row", gap: "4px" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          gap: "4px",
+          backgroundColor: "violet",
+          userSelect: "none",
+        }}
+      >
         <div>{data.name}</div>
         <div onClick={() => toggle(snapshotId, nodeId)}>
           {data.open ? ">" : "<"}

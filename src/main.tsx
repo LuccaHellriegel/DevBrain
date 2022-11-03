@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { PlanView } from "./feature/Plan/Plan";
-import { Snapshots } from "./feature/Snapshots/Snapshots";
+import { PlanView } from "./components/Plan";
+import { Snapshots } from "./components/Snapshots";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
