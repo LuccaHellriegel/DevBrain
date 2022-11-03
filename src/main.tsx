@@ -1,12 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
-import { createBrowserRouter, RouterProvider, Route } from "react-router-dom";
+import {createBrowserRouter, RouterProvider, Route} from "react-router-dom";
+import {Plan} from "./feature/Plan/Plan";
+import {Snapshots} from "./feature/Snapshots/Snapshots";
+
+//TODO: need Back/Forward buttons
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <div>Hello world!</div>,
+    element: <Snapshots />,
+  },
+  {
+    path: "/:snapshotId",
+    element: <Plan />,
   },
 ]);
 
