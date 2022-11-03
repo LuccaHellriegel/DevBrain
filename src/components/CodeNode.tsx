@@ -27,7 +27,10 @@ export const CodeNode: FC<{ snapshotId: string; nodeId: string }> = ({
         }}
       >
         <div>{data.name}</div>
-        <div onClick={() => toggle(snapshotId, nodeId)}>
+        <div
+          onClick={() => toggle(snapshotId, nodeId)}
+          style={{ cursor: "pointer" }}
+        >
           {data.open ? ">" : "<"}
         </div>
       </div>

@@ -3,7 +3,7 @@ import { SnapshotSelection } from "./SnapshotSelection";
 import { useCreateSnapshot } from "./useCreateSnapshot";
 import { open } from "@tauri-apps/api/dialog";
 
-const AddSnapshot: FC = () => {
+export const AddSnapshot: FC = () => {
   const createSnapshot = useCreateSnapshot();
   return (
     <button
@@ -28,12 +28,3 @@ const AddSnapshot: FC = () => {
 const RELEVANT_EXTENSIONS = [".java"];
 
 const RELEVANT_PATH_PARTS = ["/src/main/"];
-
-export const Snapshots: FC = () => {
-  return (
-    <div>
-      <AddSnapshot />
-      <SnapshotSelection />
-    </div>
-  );
-};

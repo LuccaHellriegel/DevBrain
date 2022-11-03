@@ -10,27 +10,17 @@ export interface PlanItem {
 
 export interface Plan {
   id: string;
+  name: string;
   items: PlanItem[];
 }
 
 export const PlanView: FC = () => {
-  const addPlan = useDevBrainStore((state) => state.addPlan);
-  const selectPlan = useDevBrainStore((state) => state.selectPlan);
   const plan = useDevBrainStore((state) => Object.values(state.plans)[0]);
   const selectedSnapshot = useDevBrainStore((state) => state.selectedSnapshot);
   const snapshots = useDevBrainStore((state) => state.snapshots);
 
   return (
     <div>
-      <button
-        onClick={() => {
-          const plan = { id: nanoid(), items: [] };
-          addPlan(plan);
-          selectPlan(plan.id);
-        }}
-      >
-        Add Plan
-      </button>
       {plan && selectedSnapshot && (
         <div
           style={{
@@ -44,9 +34,12 @@ export const PlanView: FC = () => {
             nodeId={snapshots[selectedSnapshot].root.id}
           />
           <div>
-            {plan.items.map((item) => (
-              <li>{snapshots[item.snapshotId].map[item.nodeId].name}</li>
-            ))}
+            <div>{plan.name}</div>
+            <div>
+              {plan.items.map((item) => (
+                <li>{snapshots[item.snapshotId].map[item.nodeId].name}</li>
+              ))}
+            </div>
           </div>
         </div>
       )}

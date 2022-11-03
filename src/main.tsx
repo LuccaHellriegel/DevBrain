@@ -1,10 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { AppBar } from "./components/AppBar";
 import { PlanView } from "./components/Plan";
-import { Snapshots } from "./components/Snapshots";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
+    <AppBar />
     <div
       style={{
         flexDirection: "row",
@@ -12,7 +13,6 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         alignItems: "flex-start",
       }}
     >
-      <Snapshots />
       <PlanView />
     </div>
   </React.StrictMode>
