@@ -1,16 +1,18 @@
-import {FC} from "react";
-import {Snapshot} from "./useCreateSnapshot";
-import {useDevBrainStore} from "../../store";
-import {Link} from "react-router-dom";
+import { FC } from "react";
+import { Snapshot } from "./useCreateSnapshot";
+import { useDevBrainStore } from "../../store";
 
-const SnapshotElement: FC<{snapshot: Snapshot}> = ({snapshot}) => {
+const SnapshotElement: FC<{ snapshot: Snapshot }> = ({ snapshot }) => {
   const removeSnapshot = useDevBrainStore((state) => state.removeSnapshot);
-
+  const selectSnapshot = useDevBrainStore((state) => state.selectSnapshot);
   return (
-    <div style={{display: "flex", flexDirection: "row"}}>
-      <Link to={"/" + snapshot.id}>
-        <div>{snapshot.root.name + "(" + new Date(snapshot.time) + ")"}</div>
-      </Link>
+    <div style={{ display: "flex", flexDirection: "row" }}>
+      <div onClick={() => selectSnapshot(snapshot.id)}>
+        {snapshot.root.name +
+          "(" +
+          new Date(snapshot.time).toLocaleString() +
+          ")"}
+      </div>
       <button onClick={() => removeSnapshot(snapshot.id)}>-</button>
     </div>
   );

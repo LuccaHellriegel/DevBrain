@@ -1,24 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import {createBrowserRouter, RouterProvider, Route} from "react-router-dom";
-import {Plan} from "./feature/Plan/Plan";
-import {Snapshots} from "./feature/Snapshots/Snapshots";
-
-//TODO: need Back/Forward buttons
-
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Snapshots />,
-  },
-  {
-    path: "/:snapshotId",
-    element: <Plan />,
-  },
-]);
+import { PlanView } from "./feature/Plan/Plan";
+import { Snapshots } from "./feature/Snapshots/Snapshots";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <div
+      style={{
+        flexDirection: "row",
+        display: "flex",
+        alignItems: "flex-start",
+      }}
+    >
+      <Snapshots />
+      <PlanView />
+    </div>
   </React.StrictMode>
 );

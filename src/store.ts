@@ -1,36 +1,86 @@
 import create from "zustand";
-import {persist, StateStorage} from "zustand/middleware";
+import { persist, StateStorage } from "zustand/middleware";
 import localForage from "localforage";
-import {Snapshot} from "./feature/Snapshots/useCreateSnapshot";
+import { Snapshot } from "./feature/Snapshots/useCreateSnapshot";
+import { Plan } from "./feature/Plan/Plan";
+import produce from "immer";
 
 interface State {
-  files: string[];
+  plans: Record<string, Plan>;
+  selectedPlan?: string;
+  selectPlan: (planId: string) => void;
+  addPlan: (plan: Plan) => void;
+  removePlan: (id: string) => void;
+  addToCurrentPlan: (nodeId: string) => void;
+
   snapshots: Record<string, Snapshot>;
-  addFile: (file: string) => void;
+  selectedSnapshot?: string;
+  selectSnapshot: (snapshotId: string) => void;
+  toggleCodebaseNode: (snapshotId: string, nodeId: string) => void;
   addSnapshot: (snapshot: Snapshot) => void;
   removeSnapshot: (id: string) => void;
-  path: string | undefined;
-  setFolder: (path: string) => void;
 }
+
+const prod = produce<(state: State) => void>;
 
 export const useDevBrainStore = create<State>()(
   persist(
     (set) => ({
-      files: [],
+      plans: {},
+      selectPlan: (planId) =>
+        set(
+          prod((state) => {
+            state.selectedPlan = planId;
+          })
+        ),
+      addPlan: (plan) =>
+        set(
+          prod((state) => {
+            state.plans[plan.id] = plan;
+          })
+        ),
+      removePlan: (id) =>
+        set(
+          prod((state) => {
+            delete state.plans[id];
+          })
+        ),
+      addToCurrentPlan: (nodeId) =>
+        set(
+          prod((state) => {
+            if (!state.selectedPlan || !state.selectedSnapshot) return;
+            state.plans[state.selectedPlan].items.push({
+              snapshotId: state.selectedSnapshot,
+              nodeId,
+            });
+          })
+        ),
       snapshots: {},
-      addFile: (file) => set((state) => ({files: [...state.files, file]})),
+      selectSnapshot: (snapshotId) =>
+        set(
+          prod((state) => {
+            state.selectedSnapshot = snapshotId;
+          })
+        ),
+      toggleCodebaseNode: (snapshotId, nodeId) =>
+        set(
+          prod((state) => {
+            state.snapshots[snapshotId].map[nodeId].open =
+              !state.snapshots[snapshotId].map[nodeId].open;
+          })
+        ),
       addSnapshot: (snapshot) =>
-        set((state) => ({
-          snapshots: {...state.snapshots, [snapshot.id]: snapshot},
-        })),
+        set(
+          prod((state) => {
+            state.snapshots[snapshot.id] = snapshot;
+          })
+        ),
       removeSnapshot: (id) =>
-        set((state) => ({
-          snapshots: Object.fromEntries(
-            Object.entries(state.snapshots).filter((arr) => arr[0] !== id)
-          ),
-        })),
-      path: undefined,
-      setFolder: (path) => set({path}),
+        set(
+          prod((state) => {
+            delete state.snapshots[id];
+          })
+        ),
     }),
     {
       name: "devbrain",

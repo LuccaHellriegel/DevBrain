@@ -5,6 +5,7 @@ import { useDevBrainStore } from "../../store";
 export interface CodebaseNode {
   name: string;
   id: string;
+  open: boolean;
   parentId?: string;
   childIds?: string[];
 }
@@ -52,11 +53,15 @@ export const createSnapshot = ({
   });
 };
 
+const defaultNode = (name: string, childIds?: string[]): CodebaseNode => {
+  return { name: name, id: nanoid(), open: true, childIds };
+};
+
 function mapToTree(entries: CodebaseFileEntry[]): Snapshot {
   //used for finding parents
   const nodeNameMap: Record<string, CodebaseNode> = {};
   const nodeIdMap: CodebaseNodeIdMap = {};
-  let root: CodebaseNode = { name: "", id: nanoid(), childIds: [] };
+  let root: CodebaseNode = defaultNode("", []);
   nodeNameMap[""] = root;
   nodeIdMap[root.id] = root;
   for (const entry of entries) {
@@ -70,7 +75,7 @@ function mapToTree(entries: CodebaseFileEntry[]): Snapshot {
       const parent = nodeNameMap[cur];
       if (part.split(".").length > 1) {
         //file
-        const fileNode = { name: cur + part, id: nanoid() };
+        const fileNode = defaultNode(cur + part);
         parent.childIds?.push(fileNode.id);
         //need to add for post processing
         nodeNameMap[fileNode.name] = fileNode;
@@ -79,12 +84,8 @@ function mapToTree(entries: CodebaseFileEntry[]): Snapshot {
         //folder
         cur += part + "/";
         if (!nodeNameMap[cur]) {
-          const node: CodebaseNode = {
-            name: cur,
-            id: nanoid(),
-            childIds: [],
-            parentId: parent.id,
-          };
+          const node = defaultNode(cur, []);
+          node.parentId = parent.id;
           nodeNameMap[cur] = node;
           nodeIdMap[node.id] = node;
           //there are no dirs without children, because we map from the file paths
