@@ -54,11 +54,12 @@ export const AppBar: FC = () => {
   return (
     <div
       style={{
-        width: "100vw",
         backgroundColor: "ButtonShadow",
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
+        paddingLeft: "4px",
+        paddingRight: "4px",
       }}
     >
       <SnapshotMenu />

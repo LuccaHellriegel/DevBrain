@@ -27,6 +27,7 @@ export const PlanView: FC = () => {
             flexDirection: "row",
             display: "flex",
             alignItems: "flex-start",
+            gap: "40px",
           }}
         >
           <CodeNode
@@ -34,7 +35,7 @@ export const PlanView: FC = () => {
             nodeId={snapshots[selectedSnapshot].root.id}
           />
           <div>
-            <div>{plan.name}</div>
+            <h1>{plan.name}</h1>
             <div>
               {plan.items.map((item) => (
                 <li>{snapshots[item.snapshotId].map[item.nodeId].name}</li>
