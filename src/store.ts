@@ -1,9 +1,12 @@
 import create from "zustand";
-import { persist, StateStorage } from "zustand/middleware";
+import {persist, StateStorage} from "zustand/middleware";
 import localForage from "localforage";
-import { Snapshot } from "./components/useCreateSnapshot";
-import { Plan } from "./components/Plan";
+import {Snapshot} from "./components/useCreateSnapshot";
+import {Plan, PlanItem} from "./components/PlanView";
 import produce from "immer";
+
+//TODO: markdown export of plan, so I can add it to obsidian
+//TODO: need to add test cases list!
 
 interface State {
   plans: Record<string, Plan>;
@@ -12,7 +15,7 @@ interface State {
   updatePlan: (planId: string, delta: Partial<Plan>) => void;
   addPlan: (plan: Plan) => void;
   removePlan: (id: string) => void;
-  addToCurrentPlan: (nodeId: string) => void;
+  addToCurrentPlan: (item: PlanItem) => void;
 
   snapshots: Record<string, Snapshot>;
   selectedSnapshot?: string;
@@ -37,7 +40,7 @@ export const useDevBrainStore = create<State>()(
       updatePlan: (planId, delta) =>
         set(
           prod((state) => {
-            state.plans[planId] = { ...state.plans[planId], ...delta };
+            state.plans[planId] = {...state.plans[planId], ...delta};
           })
         ),
       addPlan: (plan) =>
@@ -50,16 +53,16 @@ export const useDevBrainStore = create<State>()(
         set(
           prod((state) => {
             delete state.plans[id];
+            if (state.selectedPlan === id) {
+              delete state.selectedPlan;
+            }
           })
         ),
-      addToCurrentPlan: (nodeId) =>
+      addToCurrentPlan: (item) =>
         set(
           prod((state) => {
             if (!state.selectedPlan || !state.selectedSnapshot) return;
-            state.plans[state.selectedPlan].items.push({
-              snapshotId: state.selectedSnapshot,
-              nodeId,
-            });
+            state.plans[state.selectedPlan].items.push(item);
           })
         ),
       snapshots: {},
@@ -86,6 +89,20 @@ export const useDevBrainStore = create<State>()(
         set(
           prod((state) => {
             delete state.snapshots[id];
+            if (state.selectedSnapshot === id) {
+              state.selectedSnapshot = undefined;
+            }
+            const deletedPlanItems: PlanItem[] = [];
+            Object.values(state.plans).forEach((plan) => {
+              plan.items = plan.items.filter((item) => {
+                if (item.snapshotId === id) {
+                  deletedPlanItems.push(item);
+                  return false;
+                }
+
+                return true;
+              });
+            });
           })
         ),
     }),

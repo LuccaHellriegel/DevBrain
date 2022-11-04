@@ -1,11 +1,8 @@
-import { FC } from "react";
-import { Plan } from "./Plan";
-import { useDevBrainStore } from "../store";
+import {FC} from "react";
+import {Plan} from "./PlanView";
+import {useDevBrainStore} from "../store";
 
-const PlanElement: FC<{ plan: Plan; selected: boolean }> = ({
-  plan,
-  selected,
-}) => {
+const PlanElement: FC<{plan: Plan; selected: boolean}> = ({plan, selected}) => {
   const removePlan = useDevBrainStore((state) => state.removePlan);
   const selectPlan = useDevBrainStore((state) => state.selectPlan);
 
